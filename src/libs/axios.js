@@ -1,9 +1,7 @@
 import axios from 'axios'
-import { useStorage } from "vue3-storage";
+// import { useStorage } from "vue3-storage";
 import qs from 'qs'
-import { message } from 'ant-design-vue'
-import 'ant-design-vue/es/message/style/css'
-import router from '@/router'
+// import router from '@/router'
 
 // 读取Blob转为String
 function readBlobAsStr(blob) {
@@ -40,13 +38,13 @@ class HttpRequest {
   }
 
   interceptors(instance) {
-    const storage = useStorage();
+    // const storage = useStorage();
     // 请求拦截
     instance.interceptors.request.use(request => {
-      const token = storage.getStorageSync("token")
-      if (token) {
-        request.headers['X-Access-Token'] = token
-      }
+      // const token = storage.getStorageSync("token")
+      // if (token) {
+      //   request.headers['X-Access-Token'] = token
+      // }
       request.headers['Content-type'] = 'application/json;charset=UTF-8'
       return request
     }, error => {
@@ -58,7 +56,7 @@ class HttpRequest {
       if (data instanceof Blob && data.type && data.type.indexOf('application/json') > -1) {
         data = await readBlobAsJson(data)
       }
-      if (data.success || data.code == 200) {
+      if (data.success || data.status == 200) {
         return data
       } else if (data instanceof Blob) {
         /**
@@ -81,10 +79,10 @@ class HttpRequest {
             break
           case 401:
             // 如果token过期或者不存在则跳转到登录页面            
-            storage.removeStorageSync("token")
-            router.replace({
-              path: '/login'              
-            });
+            // storage.removeStorageSync("token")
+            // router.replace({
+            //   path: '/login'              
+            // });
             // message.error('未授权，请重新登录')
             // error.message = '未授权，请重新登录'
             break
