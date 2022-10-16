@@ -2,10 +2,7 @@
   <div class="title">购物车案例</div>
 </template>
 
-<script>
-export default {
-  name: "Header"
-}
+<script setup>
 </script>
 
 <style scoped>
