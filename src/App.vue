@@ -1,7 +1,7 @@
 <script setup>
 import {getGoodList} from '@/api/goods.js'
 
-import {reactive, computed} from 'vue'
+import {onMounted, computed, reactive} from 'vue'
 
 let goodsList = reactive([])
 
@@ -22,16 +22,19 @@ let totalNum = computed(()=> {
   },0)
 })
 
-getGoods()
+onMounted(()=> {
+  getGoods()
+})
 
-async function getGoods() {
+
+const getGoods = async ()=> {
   let {list} = await getGoodList()
   // goodsList = list会使得 goodsList 失去了响应式的效果
   // 解决方法：可以使用 ref 定义、使用 push 方法、数组外层嵌套一个对象
   goodsList.push(...list)
 }
 
-function statusChange(e) {
+const statusChange = (e)=> {
   goodsList.some(item=> {
     if (item.id === e.id) {
       item.goods_state = e.value
@@ -40,7 +43,7 @@ function statusChange(e) {
   })
 }
 
-function fullStatusChange(e) {
+const fullStatusChange = (e)=> {
   goodsList.forEach(item=> {
     item.goods_state = e
   })

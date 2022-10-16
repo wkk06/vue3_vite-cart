@@ -25,7 +25,7 @@ onMounted(()=> {
   goodsCount = props.count
 })
 
-function handleChange(e) {
+const handleChange = (e)=> {
   let obj = {id: props.id, count: goodsCount}
   bus.$emit('share', obj)
 }

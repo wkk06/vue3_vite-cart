@@ -52,11 +52,11 @@ const props = defineProps({
 
 const emit = defineEmits('statusChange')
 
-function statusChange(e) {
+const statusChange = (e)=> {
   emit('statusChange', {id: props.id,value:e.target.checked})
 }
 
-function countChange(e) {
+const countChange = (e)=> {
   console.log(e);
 }
 </script>

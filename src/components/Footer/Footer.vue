@@ -35,7 +35,7 @@ const props = defineProps({
 
 const emits = defineEmits('fulStatusChange')
 
-function statusChange(e) {
+const statusChange = (e)=> {
   emits('fullStatusChange', e.target.checked)
 }
 </script>
