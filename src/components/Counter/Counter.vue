@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import bus from '../eventBus.js'
 
 const props = defineProps({
@@ -19,11 +19,7 @@ const props = defineProps({
   }
 })
 
-let goodsCount = ref(1)
-
-onMounted(()=> {
-  goodsCount = props.count
-})
+let goodsCount = ref(props.count)
 
 const handleChange = (e)=> {
   let obj = {id: props.id, count: goodsCount}
