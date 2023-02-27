@@ -38,11 +38,6 @@ onMounted(() => {
   })
 })
 
-onBeforeUnmount(() => {
-  emitter.off("numberChange")
-})
-
-
 const getGoods = async () => {
   let {list} = await getGoodList()
   // goodsList = list会使得 goodsList 失去了响应式的效果

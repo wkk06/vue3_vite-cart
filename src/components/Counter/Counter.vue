@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref,onBeforeUnmount } from "vue";
 import emitter from '@/libs/eventBus';
 
 const props = defineProps({
@@ -26,6 +26,10 @@ const handleChange = (e) => {
   let obj = {id: props.id, count: goodsCount.value}
   emitter.emit('numberChange', obj)
 }
+
+onBeforeUnmount(()=> {
+  emitter.off('numberChange')
+})
 
 </script>
 
