@@ -1,12 +1,13 @@
 <template>
   <div>
-    <el-input-number v-model="goodsCount" @change="handleChange" :min="1" :max="99" size="small" label="描述文字"></el-input-number>
+    <el-input-number v-model="goodsCount" :max="99" :min="1" label="描述文字" size="small"
+                     @change="handleChange"></el-input-number>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import bus from '../eventBus.js'
+import emitter from '@/libs/eventBus';
 
 const props = defineProps({
   id: {
@@ -21,9 +22,9 @@ const props = defineProps({
 
 let goodsCount = ref(props.count)
 
-const handleChange = (e)=> {
-  let obj = {id: props.id, count: goodsCount}
-  bus.$emit('share', obj)
+const handleChange = (e) => {
+  let obj = {id: props.id, count: goodsCount.value}
+  emitter.emit('numberChange', obj)
 }
 
 </script>

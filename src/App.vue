@@ -1,41 +1,57 @@
 <script setup>
-import {getGoodList} from '@/api/goods.js'
+import { getGoodList } from '@/api/goods.js'
 
-import {onMounted, computed, reactive} from 'vue'
+import { onMounted, onBeforeUnmount, computed, reactive } from 'vue'
+
+import emitter from '@/libs/eventBus';
+
 
 let goodsList = reactive([])
 
-let fullChecked = computed(()=> {
-  return goodsList.every(item=> {
+let fullChecked = computed(() => {
+  return goodsList.every(item => {
     return item.goods_state
   })
 })
 
-let totalPrice = computed(()=> {
-  return goodsList.filter(item=> item.goods_state).reduce((amount,item)=> {
-    return amount+=item.goods_price*item.goods_count
-  },0)
+let totalPrice = computed(() => {
+  return goodsList.filter(item => item.goods_state).reduce((amount, item) => {
+    return amount += item.goods_price * item.goods_count
+  }, 0)
 })
-let totalNum = computed(()=> {
-  return goodsList.filter(item=> item.goods_state).reduce((amount,item)=> {
-    return amount+=item.goods_count
-  },0)
+let totalNum = computed(() => {
+  return goodsList.filter(item => item.goods_state).reduce((amount, item) => {
+    return amount += item.goods_count
+  }, 0)
 })
 
-onMounted(()=> {
+onMounted(() => {
   getGoods()
+
+  //监听
+  emitter.on("numberChange", (val) => {
+    goodsList.forEach(item => {
+      if (val.id === item.id) {
+        item.goods_count = val.count
+      }
+    })
+  })
+})
+
+onBeforeUnmount(() => {
+  emitter.off("numberChange")
 })
 
 
-const getGoods = async ()=> {
+const getGoods = async () => {
   let {list} = await getGoodList()
   // goodsList = list会使得 goodsList 失去了响应式的效果
   // 解决方法：可以使用 ref 定义、使用 push 方法、数组外层嵌套一个对象
   goodsList.push(...list)
 }
 
-const statusChange = (e)=> {
-  goodsList.some(item=> {
+const statusChange = (e) => {
+  goodsList.some(item => {
     if (item.id === e.id) {
       item.goods_state = e.value
       return true
@@ -43,23 +59,26 @@ const statusChange = (e)=> {
   })
 }
 
-const fullStatusChange = (e)=> {
-  goodsList.forEach(item=> {
+const fullStatusChange = (e) => {
+  goodsList.forEach(item => {
     item.goods_state = e
   })
 }
 </script>
 
 <template>
-<div class="app-content">
-  <Header></Header>
-  <div class="goods-list">
-      <Goods v-for="item in goodsList" :key="item.id" :id="item.id" :title="item.goods_name" :pic="item.goods_img"
-             :status="item.goods_state" :price="item.goods_price" :count="item.goods_count" @statusChange="statusChange"></Goods>
-  </div>
-  <Footer :full-checked="fullChecked" :totalPrice="totalPrice" :totalNum="totalNum" @fullStatusChange="fullStatusChange"></Footer>
+  <div class="app-content">
+    <Header></Header>
+    <div class="goods-list">
+      <Goods v-for="item in goodsList" :id="item.id" :key="item.id" :count="item.goods_count" :pic="item.goods_img"
+             :price="item.goods_price" :status="item.goods_state" :title="item.goods_name"
+             @statusChange="statusChange">
+      </Goods>
+    </div>
+    <Footer :full-checked="fullChecked" :totalNum="totalNum" :totalPrice="totalPrice"
+            @fullStatusChange="fullStatusChange"></Footer>
 
-</div>
+  </div>
 </template>
 
 <style lang="less" scoped>
